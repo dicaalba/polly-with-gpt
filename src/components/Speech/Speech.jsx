@@ -1,8 +1,6 @@
 // @ts-nocheck
 import React, { useEffect } from 'react';
-import { Image } from '@aws-amplify/ui-react';
-import { Text } from '@aws-amplify/ui-react';
-import { Button } from '@aws-amplify/ui-react';
+import { Button, Text, Image } from '@aws-amplify/ui-react';
 import { Eliana } from '../Eliana';
 
 import { useVoice } from './useVoice';
@@ -10,7 +8,7 @@ import { useAnswerFetch } from './useAnswerFetch';
 import * as St from './Speech.styles';
 
 export const Speech = () => {
-  const { question, listen, voiceSupported } = useVoice();
+  const { question, listen, voiceSupported, isListening } = useVoice();
   const { elianaIsTyping, answer, isFetchingAnswer, fetchAnswer, isPlaying, source, setIsPlaying } = useAnswerFetch();
 
   const pauseAudio = () => {
@@ -44,13 +42,9 @@ export const Speech = () => {
       <Text variation="primary" fontWeight={400}>
         Click the Mic and say your question
       </Text>
-      <Image
-        alt="Say something"
-        onClick={listen}
-        src="https://cdn-icons-png.flaticon.com/512/1186/1186128.png"
-        style={{ margin: '45px auto', cursor: 'pointer' }}
-        width="50px"
-      />
+      <St.StyledButton onClick={listen} disabled={isListening} variation="link" isListening={isListening}>
+        <Image alt="Say something" src="https://cdn-icons-png.flaticon.com/512/1186/1186128.png" width="50px" />
+      </St.StyledButton>
       {question && (
         <Text variation="primary" fontWeight={400}>
           <St.Label>You say 🎙️:</St.Label> {question}
