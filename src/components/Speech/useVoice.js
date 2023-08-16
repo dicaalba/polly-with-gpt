@@ -1,9 +1,9 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react';
 
 let speech;
 if (window.webkitSpeechRecognition) {
-  // eslint-disable-next-line
-  const SpeechRecognition = webkitSpeechRecognition;
+  const SpeechRecognition = window.webkitSpeechRecognition;
   speech = new SpeechRecognition();
   speech.continuous = true;
 } else {
@@ -11,7 +11,7 @@ if (window.webkitSpeechRecognition) {
 }
 
 const useVoice = () => {
-  const [text, setText] = useState('');
+  const [question, setQuestion] = useState('');
   const [isListening, setIsListening] = useState(false);
 
   const listen = () => {
@@ -27,15 +27,16 @@ const useVoice = () => {
     if (!speech) {
       return;
     }
+
     speech.onresult = (event) => {
-      setText(event.results[event.results.length - 1][0].transcript);
+      setQuestion(event.results[event.results.length - 1][0].transcript);
       setIsListening(false);
       speech.stop();
     };
   }, []);
 
   return {
-    text,
+    question,
     isListening,
     listen,
     voiceSupported: speech !== null,

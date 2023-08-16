@@ -1,15 +1,15 @@
+// @ts-nocheck
 import { useState, useRef } from 'react';
 import { Amplify, API } from 'aws-amplify';
 import { Predictions, AmazonAIPredictionsProvider } from '@aws-amplify/predictions';
-import awsconfig from './aws-exports';
-import '@aws-amplify/ui-react/styles.css';
+import awsconfig from '../../aws-exports';
 
 Amplify.configure(awsconfig);
 Amplify.addPluggable(new AmazonAIPredictionsProvider());
 
 export const useAnswerFetch = () => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [answer, setAnswer] = useState([]);
+  const [answer, setAnswer] = useState();
   const [isFetchingAnswer, setIsFetchingAnswer] = useState(false);
   const source = useRef(null);
   const audioCtx = new AudioContext();
@@ -26,8 +26,6 @@ export const useAnswerFetch = () => {
       },
     });
 
-    console.log('Listen Original');
-
     setAnswer(completion.Answer);
 
     Predictions.convert({
@@ -40,14 +38,14 @@ export const useAnswerFetch = () => {
       },
     })
       .then(async (result) => {
-        let AudioContext = window.AudioContext || window.webkitAudioContext;
-        console.log({ AudioContext });
+        // TODO: para q se usa?
+        // let AudioContext = window.AudioContext || window.webkitAudioContext;
         audioBuffer.current = await audioCtx.decodeAudioData(result.audioStream);
         playAudio();
 
         setIsFetchingAnswer(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   };
 
   const playAudio = () => {
@@ -71,5 +69,6 @@ export const useAnswerFetch = () => {
     isPlaying,
     source,
     setIsPlaying,
+    elianaIsTyping: isFetchingAnswer || !!answer,
   };
 };
