@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
 import { Authenticator } from '@aws-amplify/ui-react';
-import './index.css';
 
 import { useVoice } from './useVoice';
-import Mic from './microphone-black-shape.svg';
 import { useAnswerFetch } from './useAnswerFetch';
 
 const App = () => {
   const { text, isListening, listen, voiceSupported } = useVoice();
-  const { answer, isFetchingAnswer, fetchAnswer } = useAnswerFetch();
+  const { audioCtx, answer, isFetchingAnswer, fetchAnswer, isPlaying, source, setIsPlaying } = useAnswerFetch();
 
   useEffect(() => {
     if (text !== '') {
@@ -24,6 +22,14 @@ const App = () => {
     );
   }
 
+  const pauseAudio = () => {
+    if (source.current && isPlaying) {
+      source.current.stop();
+
+      setIsPlaying(false);
+    }
+  };
+
   return (
     <Authenticator>
       {({ signOut, user }) => (
@@ -33,10 +39,24 @@ const App = () => {
           <h2>Ask to GPT</h2>
           <h3>Click the Mic and say your question</h3>
           <div>
-            <img className={`microphone ${isListening && 'isListening'}`} src={Mic} alt="microphone" onClick={listen} />
+            <img
+              className={`microphone ${isListening && 'isListening'}`}
+              src="https://cdn-icons-png.flaticon.com/512/1186/1186128.png"
+              alt="microphone"
+              onClick={listen}
+            />
           </div>
           <p>{text}</p>
-          {isFetchingAnswer ? 'Consultando a GPT....' : <ul>{answer}</ul>}
+          {isFetchingAnswer ? (
+            'Consultando a GPT....'
+          ) : (
+            <ul>
+              {answer}
+              <button onClick={pauseAudio} disabled={!source.current || !isPlaying}>
+                Pause
+              </button>
+            </ul>
+          )}
         </div>
       )}
     </Authenticator>

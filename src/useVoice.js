@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 let speech;
 if (window.webkitSpeechRecognition) {
@@ -11,7 +11,7 @@ if (window.webkitSpeechRecognition) {
 }
 
 const useVoice = () => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [isListening, setIsListening] = useState(false);
 
   const listen = () => {
@@ -38,7 +38,7 @@ const useVoice = () => {
     text,
     isListening,
     listen,
-    voiceSupported: speech !== null
+    voiceSupported: speech !== null,
   };
 };
 
